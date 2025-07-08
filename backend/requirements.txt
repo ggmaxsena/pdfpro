@@ -1,0 +1,11 @@
+Django==5.0
+djangorestframework
+djangorestframework-simplejwt
+pandas
+openpyxl
+PyPDF2
+pikepdf
+gunicorn
+psycopg2-binary
+python-dotenv
+django-cors-headers
