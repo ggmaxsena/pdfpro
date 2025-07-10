@@ -103,3 +103,4 @@ coverage.xml
 nosetests.xml
 test-results/
 .pytest_cache/
+node_modules/
