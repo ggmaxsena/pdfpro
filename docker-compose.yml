@@ -11,7 +11,8 @@ services:
 
   backend:
     build: ./backend
-    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000
+    entrypoint: /app/entrypoint.sh
+    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000 --timeout 300 --workers 4
     volumes:
       - ./backend:/app:Z
       - media_volume:/app/media

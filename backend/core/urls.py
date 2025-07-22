@@ -8,5 +8,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('auth.urls')),
     path('api/anonimize/', include('anonimizador.urls')),
-    path('api/pdf/', include('pdfbox.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('api/pdf/', include('pdf_tools.urls')),
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

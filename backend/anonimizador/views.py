@@ -1,69 +1,80 @@
-
-import pandas as pd
-import re
+import json
 from io import BytesIO
+from typing import Dict
+
+from django.http import HttpResponse, JsonResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from openpyxl import load_workbook
+from rest_framework.parsers import MultiPartParser, JSONParser
 from rest_framework.views import APIView
-from rest_framework.parsers import MultiPartParser
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from django.http import HttpResponse
-from .models import AnonimizationLog
 
-def anonymize_cpf(cpf):
-    return f'XXX.{cpf[3:6]}.{cpf[6:9]}-XX'
+from .tokens import TOKENS, discover_tokens_in_headers
 
-def anonymize_rg(rg):
-    return f'XX{rg[2:-2]}XX'
 
-def anonymize_name(name):
-    parts = name.split()
-    if len(parts) > 1:
-        return f'{parts[0]} {". ".join([p[0] for p in parts[1:-1]])}. {parts[-1][0]}.'
-    return name
+def scan_headers(ws) -> list[str]:
+    return [str(c.value).strip() if c.value else "" for c in ws[1]]
 
-class AnonymizeView(APIView):
+
+@method_decorator(csrf_exempt, name="dispatch")
+class AnonymizePreview(APIView):
     parser_classes = (MultiPartParser,)
-    permission_classes = (IsAuthenticated,)
 
-    def post(self, request, *args, **kwargs):
-        file_obj = request.data['file']
-        xls = pd.ExcelFile(file_obj, engine='openpyxl')
-        output = BytesIO()
+    def post(self, request, *a, **kw):
+        f = request.data.get("file")
+        if not f:
+            return HttpResponse("arquivo não enviado", status=400)
 
-        with pd.ExcelWriter(output, engine='openpyxl') as writer:
-            for sheet_name in xls.sheet_names:
-                df = pd.read_excel(xls, sheet_name=sheet_name)
-                for col in df.columns:
-                    # Anonymize by column name
-                    if 'cpf' in col.lower():
-                        df[col] = df[col].astype(str).apply(anonymize_cpf)
-                    elif 'rg' in col.lower():
-                        df[col] = df[col].astype(str).apply(anonymize_rg)
-                    elif 'nome' in col.lower():
-                        df[col] = df[col].astype(str).apply(anonymize_name)
-                    elif 'processo' in col.lower():
-                        df[col] = 'Não informado'
-                    else:
-                        # Anonymize by content
-                        df[col] = df[col].astype(str).apply(lambda x: 
-                            anonymize_cpf(x) if re.match(r'^\d{11}$', x) else
-                            anonymize_rg(x) if re.match(r'^\d{6,9}$', x) and not re.match(r'^\d{11}$', x) and not re.match(r'^\d{14}$', x) else
-                            anonymize_name(x) if re.match(r'^[A-Za-z\s]+$', x) and len(x.split()) > 1 else
-                            'Não informado' if re.match(r'^\d{16}$', x) else x
-                        )
-                df.to_excel(writer, sheet_name=sheet_name, index=False)
-        
-        output.seek(0)
+        wb = load_workbook(f, read_only=True, data_only=False)
+        resp = {"sheets": [], "tokens_detected": set()}
 
-        AnonimizationLog.objects.create(
-            user=request.user,
-            file_name=file_obj.name,
-            sheet_names=xls.sheet_names
+        for ws in wb.worksheets:
+            headers = scan_headers(ws)
+            tokens_in_sheet = discover_tokens_in_headers(headers)
+            resp["sheets"].append({"name": ws.title, "columns": headers})
+            resp["tokens_detected"].update(tokens_in_sheet.keys())
+
+        resp["tokens_detected"] = sorted(list(resp["tokens_detected"]))
+        return JsonResponse(resp)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class AnonymizeRun(APIView):
+    parser_classes = (MultiPartParser, JSONParser)
+
+    def post(self, request, *a, **kw):
+        f = request.data.get("file")
+        if not f:
+            return HttpResponse("arquivo não enviado", status=400)
+
+        raw_rules = request.data.get("rules", "{}")
+        rules: Dict[str, bool] = json.loads(raw_rules)
+        if not rules:
+            return HttpResponse("regras de anonimização não enviadas", status=400)
+
+        wb = load_workbook(f, data_only=False)
+        for ws in wb.worksheets:
+            headers = scan_headers(ws)
+            tokens_to_apply = discover_tokens_in_headers(headers)
+
+            for token_key, col_indices in tokens_to_apply.items():
+                if not rules.get(token_key, False):
+                    continue  # Skip if rule is false or absent
+
+                _, mask_fn = TOKENS[token_key]
+                for row in ws.iter_rows(min_row=2):
+                    for col_idx in col_indices:
+                        cell = row[col_idx]
+                        if cell.value is not None:
+                            cell.value = mask_fn(str(cell.value))
+
+        out = BytesIO()
+        wb.save(out)
+        out.seek(0)
+        return HttpResponse(
+            out.read(),
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={
+                "Content-Disposition": f'attachment; filename=anonimized_{getattr(f, "name", "file.xlsx")}'
+            },
         )
-
-        response = HttpResponse(
-            output.read(),
-            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        )
-        response['Content-Disposition'] = f'attachment; filename=anonimized_{file_obj.name}'
-        return response

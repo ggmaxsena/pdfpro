@@ -1,3 +1,58 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --sedam-green: #006C3A;   /* primária */
+  --sedam-green-dark: #004F2A;
+  --sedam-blue: #003B7A;    /* secundária */
+  --sedam-yellow: #FFD600;  /* realce */
+  --sedam-gray-900: #1F2937;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  font-family:'Inter',Roboto,Arial,sans-serif;
+  background:#fff;
+  color:var(--sedam-gray-900);
+}
+
+header{
+  background:var(--sedam-green);
+  color:#fff;
+}
+header a{
+  color:#fff;
+  font-weight:600;
+  padding:0.75rem 1rem;
+}
+header a:hover{
+  background:var(--sedam-green-dark);
+}
+
+.sidebar{
+  background:var(--sedam-green);
+  width:260px;
+}
+.sidebar a{
+  color:#fff;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.btn-primary{
+  background:var(--sedam-green);
+  color:#fff;
+  border-radius:0.375rem;
+  padding:0.5rem 1rem;
+}
+.btn-primary:hover{
+  background:var(--sedam-green-dark);
+}
+
+footer{
+  background:var(--sedam-green);
+  color:#fff;
+  padding:2rem 0;
+  font-size:0.875rem;
+}

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import axios from 'axios'
+import fetcher from '../../../lib/api'
 
 export default function Compress() {
   const [file, setFile] = useState(null)
@@ -18,44 +18,55 @@ export default function Compress() {
     const formData = new FormData()
     formData.append('file', file)
 
-    setStatus('Compressing...')
+    setStatus('Comprimindo...')
     try {
-      const token = localStorage.getItem('token')
-      const response = await axios.post('/api/pdf/compress/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`,
-        },
-        responseType: 'blob',
+      const response = await fetcher('/pdf/compress/', {
+        method: 'POST',
+        body: formData,
       })
 
-      const url = window.URL.createObjectURL(new Blob([response.data]))
+      if (!response.ok) {
+        throw new Error('Falha na requisição de compressão');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
-      link.setAttribute('download', `compressed_${file.name}`)
+      link.setAttribute('download', `comprimido_${file.name}`)
       document.body.appendChild(link)
       link.click()
-      setStatus('Completed!')
+      link.remove()
+      setStatus('Concluído!')
     } catch (error) {
-      console.error('Compression failed', error)
-      setStatus('Failed!')
+      console.error('Falha na compressão', error)
+      setStatus('Falhou!')
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-xl mx-auto bg-white p-6 rounded shadow-md">
-        <h1 className="text-2xl font-bold mb-6">Compress PDF</h1>
+    <div className="min-h-screen p-4 md:p-8">
+      <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <h1 className="text-2xl md:text-3xl font-bold mb-6 text-sedam-blue">Comprimir PDF</h1>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700">Upload .pdf file</label>
-            <input type="file" onChange={handleFileChange} accept=".pdf" className="w-full" />
+          <div className="mb-6">
+            <label className="block text-gray-700 mb-2 font-semibold">1. Envie seu arquivo .pdf</label>
+            <input 
+              type="file" 
+              onChange={handleFileChange} 
+              accept=".pdf" 
+              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sedam-blue bg-gray-50"
+            />
           </div>
-          <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded" disabled={!file}>
-            Compress and Download
+          <button 
+            type="submit" 
+            className="w-full btn-primary py-3"
+            disabled={!file || status === 'Comprimindo...'}
+          >
+            {status === 'Comprimindo...' ? 'Processando...' : '2. Comprimir e Baixar'}
           </button>
         </form>
-        {status && <p className="mt-4 text-center">{status}</p>}
+        {status && status !== 'Comprimindo...' && <p className="mt-6 text-center text-gray-700 font-medium">{status}</p>}
       </div>
     </div>
   )
