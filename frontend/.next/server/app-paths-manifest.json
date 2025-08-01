@@ -1,3 +1,5 @@
 {
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/pdf/separar/page": "app/pdf/separar/page.js",
+  "/anonimizar/page": "app/anonimizar/page.js"
 }

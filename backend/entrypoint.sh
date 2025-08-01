@@ -21,7 +21,8 @@ fi
 
 # Apply database migrations
 echo "Applying database migrations..."
-python manage.py migrate --noinput
+poetry run python manage.py makemigrations auth_app --noinput
+poetry run python manage.py migrate --noinput
 
 # Execute the main command (passed to the script)
 echo "Starting server..."

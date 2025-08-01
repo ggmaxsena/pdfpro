@@ -1,0 +1,1 @@
+NAME_TOKEN = "NOME_ANON"

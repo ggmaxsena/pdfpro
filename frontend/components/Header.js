@@ -18,8 +18,9 @@ export default function Header() {
           <Link href="/anonimizar" className="hover:bg-sedam-dark px-3 py-2 rounded">Anonimizar</Link>
           <Link href="/pdf/comprimir" className="hover:bg-sedam-dark px-3 py-2 rounded">Comprimir PDF</Link>
           <Link href="/pdf/separar" className="hover:bg-sedam-dark px-3 py-2 rounded">Separar PDF</Link>
-          <Link href="/_login" className="hover:bg-sedam-dark px-3 py-2 rounded">Login</Link>
-          <Link href="/_register" className="hover:bg-sedam-dark px-3 py-2 rounded">Registrar</Link>
+          <Link href="/excel/anonimizar-nome" className="hover:bg-sedam-dark px-3 py-2 rounded">Anonimizar Nome</Link>
+          <Link href="/login" className="hover:bg-sedam-dark px-3 py-2 rounded">Login</Link>
+          <Link href="/register" className="hover:bg-sedam-dark px-3 py-2 rounded">Registrar</Link>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -38,8 +39,9 @@ export default function Header() {
             <li><Link href="/anonimizar" className="block hover:bg-sedam-dark px-4 py-2 rounded">Anonimizar</Link></li>
             <li><Link href="/pdf/comprimir" className="block hover:bg-sedam-dark px-4 py-2 rounded">Comprimir PDF</Link></li>
             <li><Link href="/pdf/separar" className="block hover:bg-sedam-dark px-4 py-2 rounded">Separar PDF</Link></li>
-            <li><Link href="/_login" className="block hover:bg-sedam-dark px-4 py-2 rounded">Login</Link></li>
-            <li><Link href="/_register" className="block hover:bg-sedam-dark px-4 py-2 rounded">Registrar</Link></li>
+            <li><Link href="/excel/anonimizar-nome" className="block hover:bg-sedam-dark px-4 py-2 rounded">Anonimizar Nome</Link></li>
+            <li><Link href="/login" className="block hover:bg-sedam-dark px-4 py-2 rounded">Login</Link></li>
+            <li><Link href="/register" className="block hover:bg-sedam-dark px-4 py-2 rounded">Registrar</Link></li>
           </ul>
         </nav>
       )}

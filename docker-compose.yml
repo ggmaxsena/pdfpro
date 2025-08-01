@@ -12,7 +12,7 @@ services:
   backend:
     build: ./backend
     entrypoint: /app/entrypoint.sh
-    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000 --timeout 300 --workers 4
+    command: poetry run gunicorn config.wsgi:application --bind 0.0.0.0:8000 --timeout 300 --workers 4
     volumes:
       - ./backend:/app:Z
       - media_volume:/app/media
@@ -27,11 +27,11 @@ services:
     restart: always
 
   frontend:
-    build: ./frontend
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
     ports:
       - "3000:3000"
-    volumes:
-      - ./frontend:/app:Z
     depends_on:
       - backend
     restart: always

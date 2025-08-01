@@ -8,7 +8,7 @@ const fetcher = async (url, options = {}) => {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     },
-    credentials: 'include', // Equivalente ao withCredentials: true do axios
+    credentials: 'include',
   };
 
   const token = localStorage.getItem('auth_token');
