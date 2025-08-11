@@ -7,31 +7,33 @@ authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-Django = "5.0"
+Django = "^5.0"
 djangorestframework = "*"
-djangorestframework-simplejwt = "*"
+djangorestframework-simplejwt = "^5.5.1"
 pandas = "*"
 openpyxl = "*"
-PyPDF2 = "*"
 pikepdf = "*"
 gunicorn = "*"
 psycopg2-binary = "*"
 python-dotenv = "*"
 django-cors-headers = "*"
 python-json-logger = "*"
+pypdf = "^5.9.0"
+drf-spectacular = "^0.27.0"
+python-decouple = "*"
 
 [tool.poetry.group.dev.dependencies]
+pytest = "*"
+pytest-django = "*"
 black = "*"
 isort = "*"
-
+flake8 = "*"
 ruff = "*"
 mypy = "*"
 django-stubs = "*"
 djangorestframework-stubs = "*"
 types-openpyxl = "*"
 safety = "*"
-pytest = "*"
-pytest-django = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

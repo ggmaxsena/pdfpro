@@ -1,7 +1,15 @@
 from io import BytesIO
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, TypedDict
 
 from openpyxl import load_workbook
+
+class SheetPreview(TypedDict):
+    name: str
+    columns: List[str]
+
+class PreviewResponse(TypedDict):
+    sheets: List[SheetPreview]
+    tokens_detected: List[str]
 from openpyxl.worksheet.worksheet import Worksheet
 
 from ..tokens import TOKENS, discover_tokens_in_headers
@@ -13,18 +21,21 @@ class AnonimizationService:
         return [str(c.value).strip() if c.value else "" for c in ws[1]]
 
     @classmethod
-    def preview_anonymization(cls, file_obj) -> Dict:
+    def preview_anonymization(cls, file_obj) -> PreviewResponse:
         wb = load_workbook(file_obj, read_only=True, data_only=False)
-        resp = {"sheets": [], "tokens_detected": set()}
+        sheets_preview: List[SheetPreview] = []
+        tokens_detected: set[str] = set()
 
         for ws in wb.worksheets:
             headers = cls.scan_headers(ws)
             tokens_in_sheet = discover_tokens_in_headers(headers)
-            resp["sheets"].append({"name": ws.title, "columns": headers})
-            resp["tokens_detected"].update(tokens_in_sheet.keys())
+            sheets_preview.append({"name": ws.title, "columns": headers})
+            tokens_detected.update(tokens_in_sheet.keys())
 
-        resp["tokens_detected"] = sorted(list(resp["tokens_detected"]))
-        return resp
+        return {
+            "sheets": sheets_preview,
+            "tokens_detected": sorted(list(tokens_detected)),
+        }
 
     @classmethod
     def run_anonymization(cls, file_obj, rules: Dict[str, bool]) -> Tuple[BytesIO, str]:

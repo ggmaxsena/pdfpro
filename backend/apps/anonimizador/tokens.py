@@ -208,7 +208,7 @@ TOKENS: Dict[str, Tuple[Pattern[str], Callable[[str], str]]] = {
     # Contact / Address
     "email": (re.compile(r'e-?mail', re.I), MaskingFunctions.mask_email),
     "telefone": (re.compile(r'\b(celular|fone|telefone)\b', re.I), MaskingFunctions.mask_telefone),
-    "endereco": (re.compile(r'\bendere[cç]o\b', re.I), MaskingFunctions.mask_address),
+    "endereco": (re.compile(r'\bendere[cç]o(?! de e-mail)\b', re.I), MaskingFunctions.mask_address),
     "cep": (re.compile(r'\bcep\b', re.I), MaskingFunctions.mask_cep),
 
     # Device Identifiers

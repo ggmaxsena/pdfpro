@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import IsAuthenticated
+
 from ..serializers.anonymize_serializers import AnonymizeNameSerializer
 from ..services.excel_service import ExcelService
 from ..utils.responses import as_attachment

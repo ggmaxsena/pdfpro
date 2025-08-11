@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'apps.anonimizador',
     'apps.pdf_tools',
     'apps.excel_tools',
+    'apps.travel',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [

@@ -12,6 +12,8 @@ class ExcelService:
         """
         wb = load_workbook(file_obj)
         ws = wb[sheet_name] if sheet_name else wb.active
+        if ws is None:
+            raise ValueError("Nenhuma planilha ativa encontrada.")
 
         # Localiza coluna Nome
         header_row = next(ws.iter_rows(min_row=1, max_row=1, values_only=False))
@@ -24,8 +26,9 @@ class ExcelService:
             raise ValueError("Coluna 'Nome' não encontrada.")
 
         # Anonimiza células
-        for cell in ws.iter_cols(min_col=name_col_idx, max_col=name_col_idx,
-                                 min_row=2, values_only=False)[0]:
+        name_col = next(ws.iter_cols(min_col=name_col_idx, max_col=name_col_idx,
+                                     min_row=2, values_only=False))
+        for cell in name_col:
             if cell.value:
                 cell.value = NAME_TOKEN
 
