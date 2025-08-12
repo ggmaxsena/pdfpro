@@ -36,11 +36,10 @@ INSTALLED_APPS = [
     'corsheaders',
 
     # Local apps
-    'apps.auth.apps.AuthAppConfig',
-    'apps.anonimizador',
-    'apps.pdf_tools',
-    'apps.excel_tools',
+    'apps.users',
+    'apps.pdfbox',
     'apps.travel',
+    'apps.common',
     'drf_spectacular',
 ]
 
@@ -143,7 +142,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom User Model
-AUTH_USER_MODEL = 'auth_app.CustomUser'
+AUTH_USER_MODEL = 'users.User'
 
 # Django REST Framework
 REST_FRAMEWORK = {

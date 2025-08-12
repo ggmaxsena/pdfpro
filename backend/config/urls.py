@@ -8,13 +8,11 @@ from django.conf.urls.static import static
 
 urlpatterns: List[Union[URLPattern, URLResolver]] = [
     path('admin/', admin.site.urls),
-    path('api/auth/', include('apps.auth.urls')),
-    path('api/anonimize/', include('apps.anonimizador.urls')),
-    path('api/pdf/', include('apps.pdf_tools.urls')),
-    path('api/excel/', include('apps.excel_tools.urls')),
+    path('api/users/', include('apps.users.urls')),
+    path('api/pdfbox/', include('apps.pdfbox.urls')),
     path('api/travel/', include('apps.travel.urls')),
-    path('api/travel/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/travel/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]
 
 if settings.DEBUG:
