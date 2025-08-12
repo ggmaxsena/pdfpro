@@ -7,6 +7,7 @@ until nc -z db 5432; do
 done
 
 # Aplica migrações e cria superusuário, se desejar
+poetry run python manage.py makemigrations --noinput
 poetry run python manage.py migrate --noinput
 
 # Inicia o Gunicorn
