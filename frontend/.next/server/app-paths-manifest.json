@@ -1,5 +1,13 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
+  "/anonimizar/page": "app/anonimizar/page.js",
+  "/diarias/[id]/page": "app/diarias/[id]/page.js",
+  "/diarias/nova/page": "app/diarias/nova/page.js",
+  "/diarias/page": "app/diarias/page.js",
+  "/excel/anonimizar-nome/page": "app/excel/anonimizar-nome/page.js",
+  "/login/page": "app/login/page.js",
   "/page": "app/page.js",
+  "/pdf/comprimir/page": "app/pdf/comprimir/page.js",
   "/pdf/separar/page": "app/pdf/separar/page.js",
-  "/anonimizar/page": "app/anonimizar/page.js"
+  "/register/page": "app/register/page.js"
 }

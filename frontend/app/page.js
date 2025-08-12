@@ -10,7 +10,7 @@ export default function Home() {
         <h1 className="text-3xl md:text-4xl font-bold mb-4 text-sedam-blue">Bem-vindo ao PDF Pro</h1>
         <p className="text-md md:text-lg text-gray-700 mb-8">Sua solução completa para gerenciamento de PDFs.</p>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           <Link href="/anonimizar" className="btn-primary py-3 md:py-2"> 
             Anonimizar PDF
           </Link>
@@ -19,6 +19,9 @@ export default function Home() {
           </Link>
           <Link href="/pdf/separar" className="btn-primary py-3 md:py-2">
             Separar PDF
+          </Link>
+          <Link href="/diarias" className="btn-primary py-3 md:py-2">
+            Diárias
           </Link>
         </div>
       </div>

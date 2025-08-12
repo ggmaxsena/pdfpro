@@ -1,0 +1,6 @@
+security:
+  ignore-vulnerabilities:
+    # Falso positivo: a versão 5.5.1 não é afetada pela CVE-2024-22513
+    "66963":
+      reason: "Falso positivo, a versão instalada não é afetada."
+      expires: "2025-09-08"

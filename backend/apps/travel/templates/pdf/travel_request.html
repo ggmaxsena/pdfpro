@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Formulário de Autorização de Viagem e Diárias (Anexo II)</title>
+    <style>
+        body { font-family: sans-serif; margin: 2cm; font-size: 10pt; }
+        h1, h2 { text-align: center; margin-bottom: 10px; }
+        h1 { font-size: 14pt; }
+        h2 { font-size: 12pt; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+        .section { margin-bottom: 15px; }
+        .field { margin-bottom: 5px; line-height: 1.4; }
+        .field strong { display: inline-block; width: 180px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        .footer { margin-top: 30px; text-align: center; font-size: 9pt; }
+    </style>
+</head>
+<body>
+    <h1>FORMULÁRIO DE AUTORIZAÇÃO DE VIAGEM E DIÁRIAS</h1>
+    <h2>(Anexo II do Decreto nº 18.728/2014)</h2>
+
+    <div class="section">
+        <h2>1. Dados da Solicitação</h2>
+        <div class="field"><strong>Unidade Orçamentária:</strong> {{ travel_request.unidade_orcamentaria }}</div>
+        <div class="field"><strong>Órgão Solicitante:</strong> {{ travel_request.orgao_solicitante }}</div>
+        <div class="field"><strong>Objetivo:</strong> {{ travel_request.objetivo }}</div>
+        <div class="field"><strong>Justificativa:</strong> {{ travel_request.justificativa }}</div>
+        <div class="field"><strong>Itinerário:</strong> {{ travel_request.itinerario }}</div>
+        <div class="field"><strong>Período:</strong> {{ travel_request.data_ida|date:"d/m/Y" }} a {{ travel_request.data_retorno|date:"d/m/Y" }}</div>
+        <div class="field"><strong>Tipo de Transporte:</strong> {{ travel_request.get_transporte_tipo_display }}</div>
+        <div class="field"><strong>Meio de Transporte:</strong> {{ travel_request.get_transporte_meio_display }}</div>
+        {% if travel_request.descricao_veiculo %}
+        <div class="field"><strong>Descrição do Veículo:</strong> {{ travel_request.descricao_veiculo }}</div>
+        {% endif %}
+        <div class="field"><strong>Criado Por:</strong> {{ travel_request.criado_por.username }}</div>
+        <div class="field"><strong>Data de Criação:</strong> {{ travel_request.data_criacao|date:"d/m/Y H:i" }}</div>
+    </div>
+
+    <div class="section">
+        <h2>2. Participantes da Viagem</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Matrícula</th>
+                    <th>Cargo</th>
+                    <th>CDS</th>
+                    <th>CPF</th>
+                    <th>Banco</th>
+                    <th>Agência</th>
+                    <th>Conta Corrente</th>
+                    <th>Tipo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for traveler in travel_request.travelers.all %}
+                <tr>
+                    <td>{{ traveler.nome }}</td>
+                    <td>{{ traveler.matricula }}</td>
+                    <td>{{ traveler.cargo }}</td>
+                    <td>{{ traveler.cds|default:"-" }}</td>
+                    <td>{{ traveler.cpf }}</td>
+                    <td>{{ traveler.banco }}</td>
+                    <td>{{ traveler.agencia }}</td>
+                    <td>{{ traveler.conta_corrente }}</td>
+                    <td>{{ traveler.get_tipo_display }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>3. Cálculo de Diárias (Estimativa)</h2>
+        <div class="field"><strong>Quantidade de Diárias:</strong> {{ travel_request.calculated_quantity|floatformat:1 }}</div>
+        <div class="field"><strong>Valor Unitário (Estimado):</strong> R$ {{ travel_request.calculated_unit_price|floatformat:2 }}</div>
+        <div class="field"><strong>Valor Total (Estimado):</strong> R$ {{ travel_request.calculated_total_value|floatformat:2 }}</div>
+    </div>
+
+    <div class="footer">
+        <p>Documento gerado automaticamente pelo Sistema de Gestão de Viagens e Diárias da SEDAM.</p>
+        <p>Conforme Decreto nº 18.728/2014 e alterações posteriores.</p>
+    </div>
+</body>
+</html>
